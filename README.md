@@ -1,2 +1,2 @@
-# ade-catalog
-Azure Deployment Environment catalog
+# ade-catalogs
+Azure Deployment Environment catalogs

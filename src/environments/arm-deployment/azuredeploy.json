@@ -1,0 +1,196 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageAcctPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "description"
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "description"
+      }
+    },
+    "vnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "description"
+      }
+    },
+    "web-subnet": {
+      "type": "string",
+      "metadata": {
+        "description": "description"
+      }
+    },
+    "app-subnet": {
+      "type": "string",
+      "metadata": {
+        "description": "description"
+      }
+    },
+    "dta-subnet": {
+      "type": "string",
+      "metadata": {
+        "description": "description"
+      }
+    },
+    "logAnalyticsWorkspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "description"
+      }
+    },
+    "automationAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "description"
+      }
+    }
+  },
+  "variables": {
+    "storageAccountName": "[concat(parameters('storageAcctPrefix'), uniqueString(resourceGroup().id))]",
+    "subnets": {
+      "web": "[concat('subnet-', parameters('web-subnet'))]",
+      "app": "[concat('subnet-', parameters('app-subnet'))]",
+      "dta": "[concat('subnet-', parameters('dta-subnet'))]"
+    },
+    "nsgs": {
+      "web": "[concat('nsg-', variables('subnets').web)]",
+      "app": "[concat('nsg-', variables('subnets').app)]",
+      "dta": "[concat('nsg-', variables('subnets').dta)]"
+    },
+  },
+  "resources": [
+    {
+      "name": "[variables('storageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2023-01-01",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "properties": {
+        "accountType": "Standard_LRS",
+        "accessTier": "Hot",
+        "supportsHttpsTrafficOnly": true
+      }
+    },
+    {
+      "name": "[parameters('vnetName')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2023-11-01",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "virtualNetwork1"
+      },
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "192.168.11.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('subnets').web]",
+            "properties": {
+              "addressPrefix": "192.168.11.0/29"
+            }
+          },
+          {
+            "name": "[variables('subnets').app]",
+            "properties": {
+              "addressPrefix": "192.168.11.8/29"
+            }
+          },
+          {
+            "name": "[variables('subnets').dta]",
+            "properties": {
+              "addressPrefix": "192.168.11.16/29"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[variables('nsgs').web]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2023-11-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": []
+      }
+    },
+    {
+      "name": "[variables('nsgs').app]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2023-11-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": []
+      }
+    },
+    {
+      "name": "[variables('nsgs').dta]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2023-11-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": []
+      }
+    },
+    {
+      "name": "[parameters('logAnalyticsWorkspaceName')]",
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2023-09-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "features": {
+          "searchVersion": 1
+        }
+      }
+    },
+    {
+      "name": "[parameters('automationAccountName')]",
+      "type": "Microsoft.Automation/automationAccounts",
+      "apiVersion": "2023-11-01",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "properties": {
+        "sku": {
+          "name": "Standard"
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "storageAccountName": {
+      "type": "string",
+      "value": "[variables('storageAccountName')]"
+    },
+    "vnetName": {
+      "type": "string",
+      "value": "[parameters('vnetName')]"
+    },
+    "subnets": {
+      "type": "object",
+      "value": "[variables('subnets')]"
+    },
+    "nsgs": {
+      "type": "object",
+      "value": "[variables('nsgs')]"
+    },
+    "logAnalyticsWorkspaceName": {
+      "type": "string",
+      "value": "[parameters('logAnalyticsWorkspaceName')]"
+    },
+    "automationAccountName": {
+      "type": "string",
+      "value": "[parameters('automationAccountName')]"
+    }
+  }
+}

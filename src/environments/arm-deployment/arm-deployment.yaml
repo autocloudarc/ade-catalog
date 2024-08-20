@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=https://github.com/Azure/deployment-environments/releases/download/2022-11-11-preview/manifest.schema.json
+name: arm-deployment
+version: 1.0.0
+summary: Azure resources deployment using ARM
+description: Deploys a storage account, virtual network with three subnets, a log analytics workspace and an automation account.
+runner: ARM
+templatePath: azuredeploy.json
+parameters:
+  - id: storageAccountPrefix
+    name: storageAccountPrefix
+    description: Prefix for the storage account name
+    default: "1sta"
+    type: string
+    required: true
+  - id: location
+    name: location
+    description: Location to deploy the environment resources
+    default: "[resourceGroup().location]"
+    type: string
+    required: true
+  - id: vnetName
+    name: vnetName
+    description: Virtual network name
+    default: "arm-vnt-01"
+    type: string
+    required: true
+  - id: web-subnet
+    name: web-subnet
+    description: Web subnet name
+    default: "web-snt"
+    type: string
+    required: true
+  - id: app-subnet
+    name: app-subnet
+    description: App subnet name
+    default: "app-snt"
+    type: string
+    required: true
+  - id: dta-subnet
+    name: dta-subnet
+    description: Data subnet name
+    default: "dta-snt"
+    type: string
+    required: true
+  - id: logAnalyticsWorkspaceName
+    name: logAnalyticsWorkspaceName
+    description: Log Analytics workspace name
+    default: "arm-law-01"
+    type: string
+    required: true
+  - id: automationAccountName
+    name: automationAccountName
+    description: Automation account name
+    default: "arm-aaa-01"
+    type: string
+    required: true
