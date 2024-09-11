@@ -62,7 +62,7 @@
       "web": "[concat('nsg-', variables('subnets').web)]",
       "app": "[concat('nsg-', variables('subnets').app)]",
       "dta": "[concat('nsg-', variables('subnets').dta)]"
-    },
+    }
   },
   "resources": [
     {
