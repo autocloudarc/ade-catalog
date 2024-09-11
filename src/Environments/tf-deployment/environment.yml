@@ -4,7 +4,7 @@ version: 1.0.0
 summary: Azure resources deployment using Terraform
 description: Deploys a storage account, virtual network with three subnets, a log analytics workspace
 runner: Terraform
-templatePath: azuredeploy.json
+templatePath: main.tf
 parameters:
   - id: storageAccountPrefix
     name: storageAccountPrefix
