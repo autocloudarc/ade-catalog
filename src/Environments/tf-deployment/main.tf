@@ -2,7 +2,7 @@ terraform {
     required_providers {
         azurerm = {
             source  = "hashicorp/azurerm"
-            version = ">= 2.0"
+            version = "~> 4.x"
         }
     }
 }
@@ -11,26 +11,8 @@ provider "azurerm" {
     features {}
 }
 
-variable "storage_acct_prefix" {
-    description = "Prefix for storage account name"
-    type        = string
-    default     = "storage"
-}
-
-variable "vnet_name" {
-    description = "Name of the virtual network"
-    type        = string
-    default     = "my-vnet"
-}
-
-variable "log_analytics_workspace_name" {
-    description = "Name of the log analytics workspace"
-    type        = string
-    default     = "my-log-analytics"
-}
-
 resource "azurerm_storage_account" "storage" {
-    name                     = "${var.storage_acct_prefix}${random_string.random_suffix.result}"
+    name                     = "${var.storageAccountPrefix}${random_string.random_suffix.result}"
     resource_group_name      = azurerm_resource_group.main.name
     location                 = azurerm_resource_group.main.location
     account_tier             = "Standard"
@@ -38,7 +20,7 @@ resource "azurerm_storage_account" "storage" {
 }
 
 resource "azurerm_virtual_network" "vnet" {
-    name                = var.vnet_name
+    name                = var.vnetName
     resource_group_name = azurerm_resource_group.main.name
     location            = azurerm_resource_group.main.location
     address_space       = ["192.168.11.0/24"]
@@ -78,7 +60,7 @@ resource "azurerm_network_security_group" "dta_nsg" {
 }
 
 resource "azurerm_log_analytics_workspace" "log_analytics" {
-    name                = var.log_analytics_workspace_name
+    name                = var.logAnalyticsWorkspaceName
     resource_group_name = azurerm_resource_group.main.name
     location            = azurerm_resource_group.main.location
     sku                 = "PerGB2018"
