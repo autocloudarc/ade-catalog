@@ -11,8 +11,6 @@ provider "azurerm" {
     features {}
 }
 
-
-
 resource "azurerm_resource_group" "main" {
 	name     = "tfm-rgp-01"
 	location = "eastus2"
