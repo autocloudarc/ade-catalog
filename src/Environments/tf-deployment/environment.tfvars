@@ -1,5 +1,16 @@
-  variable "storageAccountPrefix"
-  {
+  variable "resourceGroupName" {
+    description = "Resource group name" 
+    default = "tfm-rgp-01"
+    type = string
+  }"
+
+  variable "location" {
+    description = "Location to deploy the environment resources" 
+    default = "eastus2"
+    type = string
+  }
+
+  variable "storageAccountPrefix" {
     description =
     "Prefix for the storage account name" default
     = "1sta"
@@ -7,17 +18,14 @@
     string
   }
 
-  variable "location"
-  {
-    description =
-    "Location to deploy the environment resources" default
+  variable "location" {
+    description = "Location to deploy the environment resources" default
     = "[resourceGroup().location]"
     type =
     string
   }
 
-  variable "vnetName"
-  {
+  variable "vnetName" {
     description =
     "Virtual network name" default
     = "arm-vnt-01"
@@ -25,8 +33,7 @@
     string
   }
 
-  variable "web-subnet"
-  {
+  variable "web-subnet" {
     description =
     "Web subnet name" default
     = "web-snt"
@@ -34,8 +41,7 @@
     string
   }
 
-  variable "app-subnet"
-  {
+  variable "app-subnet" {
     description =
     "App subnet name" default
     = "app-snt"
@@ -43,8 +49,7 @@
     string
   }
 
-  variable "dta-subnet"
-  {
+  variable "dta-subnet" {
     description =
     "Data subnet name" default
     = "dta-snt"
@@ -52,8 +57,7 @@
     string
   }
 
-  variable "logAnalyticsWorkspaceName"
-  {
+  variable "logAnalyticsWorkspaceName" {
     description =
     "Log Analytics workspace name" default
     = "arm-law-01"
