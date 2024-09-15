@@ -3,7 +3,7 @@ name: tf-deployment
 version: 1.0.0
 summary: Azure resources deployment using Terraform
 description: Deploys a storage account, virtual network with three subnets, a log analytics workspace
-runner: "acr0915.azurecr.io/ade-tfm:1.0.5"
+runner: "acr0915.azurecr.io/ade-tfm:1.0.6"
 templatePath: main.tf
 parameters:
   - id: storageAccountPrefix
