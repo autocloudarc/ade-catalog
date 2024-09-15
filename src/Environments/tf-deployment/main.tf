@@ -31,28 +31,6 @@ resource "azurerm_storage_account" "storage" {
     account_replication_type = "LRS"
 }
 
-resource "azurerm_virtual_network" "vnet" {
-    name                = var.vnetName
-    resource_group_name = azurerm_resource_group.main.name
-    location            = azurerm_resource_group.main.location
-    address_space       = ["192.168.11.0/24"]
-
-    subnet {
-        name           = "web"
-        address_prefixes = "192.168.11.0/29"
-    }
-
-    subnet {
-        name           = "app"
-        address_prefixes = "192.168.11.8/29"
-    }
-
-    subnet {
-        name           = "dta"
-        address_prefixes = "192.168.11.16/29"
-    }
-}
-
 resource "azurerm_network_security_group" "web_nsg" {
     name                = "web"
     resource_group_name = azurerm_resource_group.main.name
@@ -80,18 +58,6 @@ resource "azurerm_log_analytics_workspace" "log_analytics" {
 
 output "storage_account_name" {
     value = azurerm_storage_account.storage.name
-}
-
-output "vnet_name" {
-    value = azurerm_virtual_network.vnet.name
-}
-
-output "subnets" {
-    value = {
-        web = azurerm_virtual_network.vnet.subnet_web.name
-        app = azurerm_virtual_network.vnet.subnet_app.name
-        dta = azurerm_virtual_network.vnet.subnet_dta.name
-    }
 }
 
 output "nsgs" {
