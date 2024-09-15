@@ -11,6 +11,18 @@ provider "azurerm" {
     features {}
 }
 
+resource "azurerm_resource_group" "main" {
+	name     = var.resourceGroupName
+	location = var.location
+}
+
+resource "random_string" "random_suffix" {
+  length  = 8
+  special = false
+  upper = false
+}
+
+
 resource "azurerm_storage_account" "storage" {
     name                     = "${var.storageAccountPrefix}${random_string.random_suffix.result}"
     resource_group_name      = azurerm_resource_group.main.name
