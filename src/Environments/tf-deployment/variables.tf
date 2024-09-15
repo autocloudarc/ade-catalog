@@ -4,12 +4,6 @@
     type = string
   }
 
-  variable "location" {
-    description = "Location to deploy the environment resources" 
-    default = "eastus2"
-    type = string
-  }
-
   variable "storageAccountPrefix" {
     description = "Prefix for the storage account name" 
     default = "1sta"
@@ -18,7 +12,7 @@
 
   variable "location" {
     description = "Location to deploy the environment resources" 
-    default = "[resourceGroup().location]"
+    default = "eastus2"
     type = string
   }
 
