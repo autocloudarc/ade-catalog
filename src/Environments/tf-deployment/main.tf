@@ -11,9 +11,11 @@ provider "azurerm" {
     features {}
 }
 
+
+
 resource "azurerm_resource_group" "main" {
-	name     = var.resourceGroupName
-	location = var.location
+	name     = "tfm-rgp-01"
+	location = "eastus2"
 }
 
 resource "random_string" "random_suffix" {
