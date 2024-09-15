@@ -11,8 +11,8 @@ provider "azurerm" {
     features {}
 }
 
-resource "azurerm_resource_group" "main" {
-	name     = "tfm-rgp-01"
+data "azurerm_resource_group" "main" {
+	name     = "dev-prj-01-env-tfm-12 (dev-prj-01)"
 	location = "eastus2"
 }
 
