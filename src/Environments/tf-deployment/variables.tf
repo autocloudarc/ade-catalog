@@ -1,6 +1,6 @@
   variable "resourceGroupName" {
     description = "Resource group name" 
-    default = "tfm-rgp-01"
+    default = "ade-tfm-rgp-01"
     type = string
   }
 
