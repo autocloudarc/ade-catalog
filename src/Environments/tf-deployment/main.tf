@@ -2,7 +2,7 @@ terraform {
     required_providers {
         azurerm = {
             source  = "hashicorp/azurerm"
-            version = "~> 4.2"
+            version = "~> 4.3"
         }
     }
 }
@@ -31,19 +31,19 @@ resource "azurerm_storage_account" "storage" {
 }
 
 resource "azurerm_network_security_group" "web_nsg" {
-    name                = "web"
+    name                = var.web_nsg
     resource_group_name = azurerm_resource_group.main.name
     location            = azurerm_resource_group.main.location
 }
 
 resource "azurerm_network_security_group" "app_nsg" {
-    name                = "app"
+    name                = var.app_nsg
     resource_group_name = azurerm_resource_group.main.name
     location            = azurerm_resource_group.main.location
 }
 
 resource "azurerm_network_security_group" "dta_nsg" {
-    name                = "dta"
+    name                = var.dta_nsg
     resource_group_name = azurerm_resource_group.main.name
     location            = azurerm_resource_group.main.location
 }

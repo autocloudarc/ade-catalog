@@ -2,42 +2,6 @@
 name: tf-deployment
 version: 1.0.0
 summary: Azure resources deployment using Terraform
-description: Deploys a storage account, virtual network with three subnets, a log analytics workspace
+description: Deploys a storage account, three network security groups, a log analytics workspace
 runner: "acr0915.azurecr.io/ade-tfm:1.0.1"
 templatePath: main.tf
-parameters:
-  - id: storageAccountPrefix
-    name: storageAccountPrefix
-    description: Prefix for the storage account name
-    default: "1sta"
-    type: string
-  - id: location
-    name: location
-    description: Location to deploy the environment resources
-    default: "[resourceGroup().location]"
-    type: string
-  - id: vnetName
-    name: vnetName
-    description: Virtual network name
-    default: "arm-vnt-01"
-    type: string
-  - id: web-subnet
-    name: web-subnet
-    description: Web subnet name
-    default: "web-snt"
-    type: string
-  - id: app-subnet
-    name: app-subnet
-    description: App subnet name
-    default: "app-snt"
-    type: string
-  - id: dta-subnet
-    name: dta-subnet
-    description: Data subnet name
-    default: "dta-snt"
-    type: string
-  - id: logAnalyticsWorkspaceName
-    name: logAnalyticsWorkspaceName
-    description: Log Analytics workspace name
-    default: "arm-law-01"
-    type: string

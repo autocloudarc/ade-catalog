@@ -1,47 +1,27 @@
-  variable "resourceGroupName" {
-    description = "Resource group name" 
-    default = "ade-tfm-rgp-01"
+variable "resourceGroupName" {
     type = string
-  }
+}   
 
-  variable "storageAccountPrefix" {
-    description = "Prefix for the storage account name" 
-    default = "1sta"
+variable "storageAccountPrefix" {
     type = string
-  }
+}
 
-  variable "location" {
-    description = "Location to deploy the environment resources" 
-    default = "eastus2"
+variable "logAnalyticsWorkspaceName" {
     type = string
-  }
+}
 
-  variable "vnetName" {
-    description = "Virtual network name" 
-    default = "arm-vnt-01" 
+variable "web_nsg" {
     type = string
-  }
+}
 
-  variable "web-subnet" {
-    description = "Web subnet name" 
-    default = "web-snt"
+variable "app_nsg" {
     type = string
-  }
+}
 
-  variable "app-subnet" {
-    description = "App subnet name" 
-    default = "app-snt"
-    type = string
-  }
+variable "dta_nsg" {
+  
+}
 
-  variable "dta-subnet" {
-    description = "Data subnet name" 
-    default = "dta-snt"
+variable "location" {
     type = string
-  }
-
-  variable "logAnalyticsWorkspaceName" {
-    description = "Log Analytics workspace name" 
-    default = "arm-law-01"
-    type = string
-  }
+}
