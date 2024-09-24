@@ -1,7 +1,7 @@
-# variable "resourceGroupName" {
-#     type = string
-#     default = "ade-tfm-rgp-01"
-# }   
+variable "resourceGroupName" {
+    type = string
+    default = "[resourceGroup().location]"
+}   
 
 variable "storageAccountPrefix" {
     type = string
@@ -28,7 +28,7 @@ variable "dta_nsg" {
   default = "dta-nsg"
 }
 
-# variable "location" {
-#     type = string
-#     default = "eastus2"
-# }
+variable "location" {
+    type = string
+    default = "eastus2"
+}
