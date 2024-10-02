@@ -1,6 +1,6 @@
 variable "resourceGroupName" {
     type = string
-    default = "[resourceGroup().location]"
+    default = "[resourceGroup().name]"
 }   
 
 variable "storageAccountPrefix" {
@@ -30,5 +30,5 @@ variable "dta_nsg" {
 
 variable "location" {
     type = string
-    default = "eastus2"
+    default = "[resourceGroup().location]"
 }
