@@ -6,11 +6,6 @@ description: Deploys a storage account, three network security groups, a log ana
 runner: "acr0915.azurecr.io/ade-tfm:1.0.2"
 templatePath: main.tf
 parameters:
-  - id: resourceGroup
-    name: resourceGroup
-    description: Resource group name
-    default: "[resourceGroup().name]"
-    type: string
   - id: storageAccountPrefix
     name: storageAccountPrefix
     description: Prefix for the storage account name
@@ -30,11 +25,6 @@ parameters:
     name: dta_nsg
     description: Data network security group name
     default: "dta-nsg"
-    type: string
-  - id: location
-    name: location
-    description: Location to deploy the environment resources
-    default: "[resourceGroup().location]"
     type: string
   - id: logAnalyticsWorkspaceName
     name: logAnalyticsWorkspaceName

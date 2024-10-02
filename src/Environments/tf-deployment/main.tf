@@ -11,6 +11,14 @@ provider "azurerm" {
     features {}
 }
 
+variable "resource_group_name" {
+	type = string
+}
+
+variable "ade_location" {
+	type = string
+}
+  
 resource "random_string" "random_suffix" {
   length  = 8
   special = false
@@ -18,8 +26,8 @@ resource "random_string" "random_suffix" {
 }
 
 resource "azurerm_resource_group" "main" {
-	name     = var.resourceGroup
-	location = var.location
+	name     = var.resource_group_name
+	location = var.ade_location
 }
 
 resource "azurerm_storage_account" "storage" {
