@@ -3,7 +3,7 @@ name: tf-deployment
 version: 1.0.0
 summary: Azure resources deployment using Terraform
 description: Deploys a storage account, three network security groups, a log analytics workspace
-runner: "acr0915.azurecr.io/ade-tfm:1.0.3"
+runner: "acr0915.azurecr.io/ade-tfm:1.0.0"
 templatePath: main.tf
 parameters:
   - id: resourceGroup
