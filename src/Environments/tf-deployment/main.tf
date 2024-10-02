@@ -18,8 +18,8 @@ resource "random_string" "random_suffix" {
 }
 
 resource "azurerm_resource_group" "main" {
-	name     = "[resourceGroup().name]"
-	location = "[resourceGroup().location]"
+	name     = var.resourceGroup
+	location = var.location
 }
 
 resource "azurerm_storage_account" "storage" {
