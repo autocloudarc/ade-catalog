@@ -59,7 +59,7 @@ resource "azurerm_log_analytics_workspace" "log_analytics" {
 }
 
 output "storage_account_name" {
-    value = module.storage.storage_account_name
+    value = azurerm_storage_account.storage.name
 }
 
 output "nsgs" {
