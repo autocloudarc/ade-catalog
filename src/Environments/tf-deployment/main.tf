@@ -18,19 +18,12 @@ variable "resource_group_name" {
 variable "ade_location" {
 	type = string
 }
-  
-resource "random_string" "random_suffix" {
-  length  = 8
-  special = false
-  upper = false
-}
 
-resource "azurerm_storage_account" "storage" {
-    name                     = "${var.storageAccountPrefix}${random_string.random_suffix.result}"
-    resource_group_name      = var.resource_group_name
-    location                 = var.ade_location
-    account_tier             = "Standard"
-    account_replication_type = "LRS"
+module "storage" {
+    source              = "./modules/storage"
+    resource_group_name = var.resource_group_name
+    ade_location        = var.ade_location
+    storageAccountPrefix = var.storageAccountPrefix
 }
 
 resource "azurerm_network_security_group" "web_nsg" {
@@ -59,7 +52,7 @@ resource "azurerm_log_analytics_workspace" "log_analytics" {
 }
 
 output "storage_account_name" {
-    value = azurerm_storage_account.storage.name
+    value = module.storage.storage_account_name
 }
 
 output "nsgs" {
