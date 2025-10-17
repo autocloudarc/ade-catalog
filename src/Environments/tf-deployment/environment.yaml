@@ -6,11 +6,6 @@ description: Deploys a storage account, three network security groups, a log ana
 runner: "pltengacr01.azurecr.io/ade/terraform:0.0.2"
 templatePath: main.tf
 parameters:
-  - id: storageAccountPrefix
-    name: storageAccountPrefix
-    description: Prefix for the storage account name
-    default: "1sta"
-    type: string
   - id: web_nsg
     name: web_nsg
     description: Web network security group name
