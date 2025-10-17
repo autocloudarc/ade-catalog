@@ -18,14 +18,6 @@ variable "resource_group_name" {
 variable "ade_location" {
 	type = string
 }
-
-module "storage" {
-    source               = "./modules/storage"
-    resource_group_name  = var.resource_group_name
-    ade_location         = var.ade_location
-    storageAccountPrefix = var.storageAccountPrefix
-}
-
 resource "azurerm_network_security_group" "web_nsg" {
     name                = var.web_nsg
     resource_group_name      = var.resource_group_name
@@ -50,11 +42,6 @@ resource "azurerm_log_analytics_workspace" "log_analytics" {
     location                 = var.ade_location
     sku                 = "PerGB2018"
 }
-
-output "storage_account_name" {
-    value = module.storage.storage_account_name
-}
-
 output "nsgs" {
     value = {
         web = azurerm_network_security_group.web_nsg.name
@@ -62,7 +49,6 @@ output "nsgs" {
         dta = azurerm_network_security_group.dta_nsg.name
     }
 }
-
 output "log_analytics_workspace_name" {
     value = azurerm_log_analytics_workspace.log_analytics.name
 }

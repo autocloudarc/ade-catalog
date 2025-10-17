@@ -5,8 +5,4 @@
    variable "ade_location" {
      type = string
    }
-
-   variable "storageAccountPrefix" {
-     type = string
-   }
    

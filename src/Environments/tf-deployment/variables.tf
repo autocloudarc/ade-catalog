@@ -1,9 +1,3 @@
-variable "storageAccountPrefix" {
-  description = "Prefix for the storage account name"
-  type        = string
-  default     = "1sta"
-}
-
 variable "web_nsg" {
   description = "Web network security group name"
   type        = string
