@@ -1,0 +1,83 @@
+name: Deploy to ADE Environments
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/Environments/**"
+      - ".github/workflows/deploy-ade.yml"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to (dev, tst, or all)"
+        required: true
+        default: "all"
+        type: choice
+        options:
+          - dev
+          - tst
+          - all
+
+env:
+  DEV_CENTER_NAME: ${{ secrets.ADE_DEV_CENTER_NAME }}
+  PROJECT_NAME: ${{ secrets.ADE_PROJECT_NAME }}
+  ENVIRONMENT_DEFINITION_NAME: tf-deployment
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latst
+    strategy:
+      matrix:
+        environment:
+          - name: dev
+            storageAccountPrefix: devsta
+            web_nsg: dev-web-nsg
+            app_nsg: dev-app-nsg
+            dta_nsg: dev-dta-nsg
+            logAnalyticsWorkspaceName: dev-law-01
+          - name: tst
+            storageAccountPrefix: tststa
+            web_nsg: tst-web-nsg
+            app_nsg: tst-app-nsg
+            dta_nsg: tst-dta-nsg
+            logAnalyticsWorkspaceName: tst-law-01
+      max-parallel: 1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to ${{ matrix.environment.name }} ADE
+        run: |
+          az devcenter dev environment create \
+            --dev-center-name "${{ env.DEV_CENTER_NAME }}" \
+            --project-name "${{ env.PROJECT_NAME }}" \
+            --environment-name "${{ matrix.environment.name }}" \
+            --environment-definition-name "${{ env.ENVIRONMENT_DEFINITION_NAME }}" \
+            --parameters \
+              storageAccountPrefix="${{ matrix.environment.storageAccountPrefix }}" \
+              web_nsg="${{ matrix.environment.web_nsg }}" \
+              app_nsg="${{ matrix.environment.app_nsg }}" \
+              dta_nsg="${{ matrix.environment.dta_nsg }}" \
+              logAnalyticsWorkspaceName="${{ matrix.environment.logAnalyticsWorkspaceName }}"
+
+      - name: Get ${{ matrix.environment.name }} Environment Details
+        if: success()
+        run: |
+          az devcenter dev environment show \
+            --dev-center-name "${{ env.DEV_CENTER_NAME }}" \
+            --project-name "${{ env.PROJECT_NAME }}" \
+            --environment-name "${{ matrix.environment.name }}"
+
+      - name: Deployment Summary
+        if: always()
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "Environment: ${{ matrix.environment.name }}" >> $GITHUB_STEP_SUMMARY
+          echo "Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY

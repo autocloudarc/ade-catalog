@@ -2,22 +2,27 @@
 name: tf-deployment
 version: 1.0.0
 summary: Azure resources deployment using Terraform
-description: Deploys a storage account, three network security groups, a log analytics workspace
+description: Deploys a storage account with RBAC authentication, three network security groups, and a log analytics workspace
 runner: "pltengacr01.azurecr.io/ade/terraform:0.0.2"
 templatePath: main.tf
 parameters:
-  - id: web_nsg
-    name: web_nsg
+  - id: rbac_storage_account_prefix
+    name: rbac_storage_account_prefix
+    description: Prefix for the RBAC-authenticated storage account name
+    default: "rbacsta"
+    type: string
+  - id: web-nsg
+    name: web-nsg
     description: Web network security group name
     default: "web-nsg"
     type: string
-  - id: app_nsg
-    name: app_nsg
+  - id: app-nsg
+    name: app-nsg
     description: App network security group name
     default: "app-nsg"
     type: string
-  - id: dta_nsg
-    name: dta_nsg
+  - id: dta-nsg
+    name: dta-nsg
     description: Data network security group name
     default: "dta-nsg"
     type: string
