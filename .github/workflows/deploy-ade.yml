@@ -33,6 +33,9 @@ env:
   DEV_CENTER_NAME: ${{ secrets.ADE_DEV_CENTER_NAME }}
   PROJECT_NAME: ${{ secrets.ADE_PROJECT_NAME }}
   ENVIRONMENT_DEFINITION_NAME: tf-deployment
+  CATALOG_NAME: ade-catalog
+  DEV_ENVIRONMENT_TYPE: dev
+  TST_ENVIRONMENT_TYPE: tst
   CLEANUP_AFTER_MINS: 30
 
 permissions:
@@ -58,9 +61,12 @@ jobs:
           az devcenter dev environment create \
             --dev-center-name "${{ env.DEV_CENTER_NAME }}" \
             --project-name "${{ env.PROJECT_NAME }}" \
+            --catalog-name "${{ env.CATALOG_NAME }}" \
+            --environment-type "${{ env.DEV_ENVIRONMENT_TYPE }}" \
             --environment-name "dev" \
             --environment-definition-name "${{ env.ENVIRONMENT_DEFINITION_NAME }}" \
-            --parameters '{"storageAccountPrefix":"devsta","web_nsg":"dev-web-nsg","app_nsg":"dev-app-nsg","dta_nsg":"dev-dta-nsg","logAnalyticsWorkspaceName":"dev-law-01"}'
+            --parameters '{"storageAccountPrefix":"devsta","web_nsg":"dev-web-nsg","app_nsg":"dev-app-nsg","dta_nsg":"dev-dta-nsg","logAnalyticsWorkspaceName":"dev-law-01"}' \
+            --user-id "${{ secrets.AZURE_CLIENT_ID }}"
 
       - name: Get Dev Environment Details
         if: success()
@@ -112,9 +118,12 @@ jobs:
           az devcenter dev environment create \
             --dev-center-name "${{ env.DEV_CENTER_NAME }}" \
             --project-name "${{ env.PROJECT_NAME }}" \
+            --catalog-name "${{ env.CATALOG_NAME }}" \
+            --environment-type "${{ env.TST_ENVIRONMENT_TYPE }}" \
             --environment-name "tst" \
             --environment-definition-name "${{ env.ENVIRONMENT_DEFINITION_NAME }}" \
-            --parameters '{"storageAccountPrefix":"tststa","web_nsg":"tst-web-nsg","app_nsg":"tst-app-nsg","dta_nsg":"tst-dta-nsg","logAnalyticsWorkspaceName":"tst-law-01"}'
+            --parameters '{"storageAccountPrefix":"tststa","web_nsg":"tst-web-nsg","app_nsg":"tst-app-nsg","dta_nsg":"tst-dta-nsg","logAnalyticsWorkspaceName":"tst-law-01"}' \
+            --user-id "${{ secrets.AZURE_CLIENT_ID }}"
 
       - name: Get Tst Environment Details
         if: success()
