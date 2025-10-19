@@ -98,24 +98,10 @@ jobs:
           echo "Environment: Dev" >> $GITHUB_STEP_SUMMARY
           echo "Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
 
-  approval:
-    runs-on: ubuntu-latest
-    name: Request Approval for Tst
-    needs: deploy-dev
-    if: success()
-    environment:
-      name: tst
-    steps:
-      - name: Request Manual Approval
-        run: |
-          echo "Dev deployment completed successfully!"
-          echo "Waiting for manual approval to proceed with Tst deployment..."
-          echo "Review the Dev environment and approve to continue."
-
   deploy-tst:
     runs-on: ubuntu-latest
     name: Deploy to Tst
-    needs: [approval, generate-env-names]
+    needs: [deploy-dev, generate-env-names]
     environment:
       name: tst
     steps:
