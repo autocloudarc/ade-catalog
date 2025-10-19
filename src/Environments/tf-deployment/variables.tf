@@ -21,9 +21,3 @@ variable "logAnalyticsWorkspaceName" {
   type        = string
   default     = "arm-law-01"
 }
-
-variable "rbac_storage_account_prefix" {
-  description = "Prefix for the RBAC-authenticated storage account name"
-  type        = string
-  default     = "rbacsta"
-}
