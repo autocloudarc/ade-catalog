@@ -65,7 +65,7 @@ jobs:
             --environment-type "${{ env.DEV_ENVIRONMENT_TYPE }}" \
             --environment-name "dev" \
             --environment-definition-name "${{ env.ENVIRONMENT_DEFINITION_NAME }}" \
-            --parameters '{"storageAccountPrefix":"devsta","web_nsg":"dev-web-nsg","app_nsg":"dev-app-nsg","dta_nsg":"dev-dta-nsg","logAnalyticsWorkspaceName":"dev-law-01"}'
+            --parameters '{"rbac_storage_account_prefix":"devsta","web-nsg":"dev-web-nsg","app-nsg":"dev-app-nsg","dta-nsg":"dev-dta-nsg","logAnalyticsWorkspaceName":"dev-law-01"}'
 
       - name: Get Dev Environment Details
         if: success()
@@ -121,7 +121,7 @@ jobs:
             --environment-type "${{ env.TST_ENVIRONMENT_TYPE }}" \
             --environment-name "tst" \
             --environment-definition-name "${{ env.ENVIRONMENT_DEFINITION_NAME }}" \
-            --parameters '{"storageAccountPrefix":"tststa","web_nsg":"tst-web-nsg","app_nsg":"tst-app-nsg","dta_nsg":"tst-dta-nsg","logAnalyticsWorkspaceName":"tst-law-01"}'
+            --parameters '{"rbac_storage_account_prefix":"tststa","web-nsg":"tst-web-nsg","app-nsg":"tst-app-nsg","dta-nsg":"tst-dta-nsg","logAnalyticsWorkspaceName":"tst-law-01"}'
 
       - name: Get Tst Environment Details
         if: success()
