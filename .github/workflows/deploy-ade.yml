@@ -1,11 +1,6 @@
 name: Deploy to ADE Environments
 
 on:
-  # push:
-  #   branches: [main]
-  #   paths:
-  #     - "src/Environments/**"
-  #     - ".github/workflows/deploy-ade.yml"
   workflow_dispatch:
     inputs:
       environment:
