@@ -103,6 +103,8 @@ jobs:
     name: Request Approval for Tst
     needs: deploy-dev
     if: success()
+    environment:
+      name: tst
     steps:
       - name: Request Manual Approval
         run: |
@@ -114,6 +116,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy to Tst
     needs: [approval, generate-env-names]
+    environment:
+      name: tst
     steps:
       - uses: actions/checkout@v4
 
