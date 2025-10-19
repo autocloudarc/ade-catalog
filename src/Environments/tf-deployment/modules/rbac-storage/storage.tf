@@ -22,5 +22,6 @@ resource "azurerm_storage_account" "rbac_storage" {
     "policy-exemption"      = "true"
     "exempt-authentication" = "true"
     "key-auth-required"     = "terraform-operations"
+    "SecurityControl"       = "Ignore"
   }
 }
