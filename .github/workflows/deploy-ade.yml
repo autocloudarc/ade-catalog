@@ -60,7 +60,7 @@ jobs:
             --project-name "${{ env.PROJECT_NAME }}" \
             --environment-name "dev" \
             --environment-definition-name "${{ env.ENVIRONMENT_DEFINITION_NAME }}" \
-            --parameters storageAccountPrefix=devsta web_nsg=dev-web-nsg app_nsg=dev-app-nsg dta_nsg=dev-dta-nsg logAnalyticsWorkspaceName=dev-law-01
+            --parameters '{"storageAccountPrefix":"devsta","web_nsg":"dev-web-nsg","app_nsg":"dev-app-nsg","dta_nsg":"dev-dta-nsg","logAnalyticsWorkspaceName":"dev-law-01"}'
 
       - name: Get Dev Environment Details
         if: success()
@@ -114,7 +114,7 @@ jobs:
             --project-name "${{ env.PROJECT_NAME }}" \
             --environment-name "tst" \
             --environment-definition-name "${{ env.ENVIRONMENT_DEFINITION_NAME }}" \
-            --parameters storageAccountPrefix=tststa web_nsg=tst-web-nsg app_nsg=tst-app-nsg dta_nsg=tst-dta-nsg logAnalyticsWorkspaceName=tst-law-01
+            --parameters '{"storageAccountPrefix":"tststa","web_nsg":"tst-web-nsg","app_nsg":"tst-app-nsg","dta_nsg":"tst-dta-nsg","logAnalyticsWorkspaceName":"tst-law-01"}'
 
       - name: Get Tst Environment Details
         if: success()
