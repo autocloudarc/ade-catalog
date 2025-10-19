@@ -157,7 +157,7 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     name: Cleanup - Delete Environments
-    needs: [deploy-tst, generate-env-names]
+    needs: [deploy-dev, deploy-tst, generate-env-names]
     if: success() && (inputs.cleanupAfterDeploy == 'true' || inputs.deleteAllAfter30mins == 'true')
     timeout-minutes: 5
     steps:
@@ -195,7 +195,7 @@ jobs:
   scheduled-cleanup:
     runs-on: ubuntu-latest
     name: Scheduled Cleanup (30 mins)
-    needs: [deploy-tst, generate-env-names]
+    needs: [deploy-dev, deploy-tst, generate-env-names]
     if: success() && inputs.deleteAllAfter30mins == 'true'
     timeout-minutes: 50
     steps:
