@@ -43,9 +43,25 @@ permissions:
   contents: read
 
 jobs:
+  generate-env-names:
+    runs-on: ubuntu-latest
+    name: Generate Environment Names
+    outputs:
+      dev-env-name: ${{ steps.gen-names.outputs.dev-env-name }}
+      tst-env-name: ${{ steps.gen-names.outputs.tst-env-name }}
+    steps:
+      - name: Generate Numbered Environment Names
+        id: gen-names
+        run: |
+          DEV_COUNTER=$(printf "%02d" $(($(date +%s) % 100 + 1)))
+          TST_COUNTER=$(printf "%02d" $((($(date +%s) + 1) % 100 + 1)))
+          echo "dev-env-name=dev-${DEV_COUNTER}" >> $GITHUB_OUTPUT
+          echo "tst-env-name=tst-${TST_COUNTER}" >> $GITHUB_OUTPUT
+
   deploy-dev:
     runs-on: ubuntu-latest
     name: Deploy to Dev
+    needs: generate-env-names
     steps:
       - uses: actions/checkout@v4
 
@@ -63,7 +79,7 @@ jobs:
             --project-name "${{ env.PROJECT_NAME }}" \
             --catalog-name "${{ env.CATALOG_NAME }}" \
             --environment-type "${{ env.DEV_ENVIRONMENT_TYPE }}" \
-            --environment-name "dev" \
+            --environment-name "${{ needs.generate-env-names.outputs.dev-env-name }}" \
             --environment-definition-name "${{ env.ENVIRONMENT_DEFINITION_NAME }}" \
             --parameters '{"rbac_storage_account_prefix":"devsta","web-nsg":"dev-web-nsg","app-nsg":"dev-app-nsg","dta-nsg":"dev-dta-nsg","logAnalyticsWorkspaceName":"dev-law-01"}'
 
@@ -73,7 +89,7 @@ jobs:
           az devcenter dev environment show \
             --dev-center-name "${{ env.DEV_CENTER_NAME }}" \
             --project-name "${{ env.PROJECT_NAME }}" \
-            --environment-name "dev"
+            --environment-name "${{ needs.generate-env-names.outputs.dev-env-name }}"
 
       - name: Dev Deployment Summary
         if: always()
@@ -97,7 +113,7 @@ jobs:
   deploy-tst:
     runs-on: ubuntu-latest
     name: Deploy to Tst
-    needs: approval
+    needs: [approval, generate-env-names]
     steps:
       - uses: actions/checkout@v4
 
@@ -119,7 +135,7 @@ jobs:
             --project-name "${{ env.PROJECT_NAME }}" \
             --catalog-name "${{ env.CATALOG_NAME }}" \
             --environment-type "${{ env.TST_ENVIRONMENT_TYPE }}" \
-            --environment-name "tst" \
+            --environment-name "${{ needs.generate-env-names.outputs.tst-env-name }}" \
             --environment-definition-name "${{ env.ENVIRONMENT_DEFINITION_NAME }}" \
             --parameters '{"rbac_storage_account_prefix":"tststa","web-nsg":"tst-web-nsg","app-nsg":"tst-app-nsg","dta-nsg":"tst-dta-nsg","logAnalyticsWorkspaceName":"tst-law-01"}'
 
@@ -129,7 +145,7 @@ jobs:
           az devcenter dev environment show \
             --dev-center-name "${{ env.DEV_CENTER_NAME }}" \
             --project-name "${{ env.PROJECT_NAME }}" \
-            --environment-name "tst"
+            --environment-name "${{ needs.generate-env-names.outputs.tst-env-name }}"
 
       - name: Tst Deployment Summary
         if: always()
@@ -141,7 +157,7 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     name: Cleanup - Delete Environments
-    needs: deploy-tst
+    needs: [deploy-tst, generate-env-names]
     if: success() && (inputs.cleanupAfterDeploy == 'true' || inputs.deleteAllAfter30mins == 'true')
     timeout-minutes: 5
     steps:
@@ -161,12 +177,12 @@ jobs:
       - name: Delete Dev Environment
         run: |
           echo "Deleting Dev environment..."
-          az devcenter dev environment delete --dev-center-name "${{ env.DEV_CENTER_NAME }}" --project-name "${{ env.PROJECT_NAME }}" --environment-name "dev" --yes || echo "Dev environment not found or already deleted"
+          az devcenter dev environment delete --dev-center-name "${{ env.DEV_CENTER_NAME }}" --project-name "${{ env.PROJECT_NAME }}" --environment-name "${{ needs.generate-env-names.outputs.dev-env-name }}" --yes || echo "Dev environment not found or already deleted"
 
       - name: Delete Tst Environment
         run: |
           echo "Deleting Tst environment..."
-          az devcenter dev environment delete --dev-center-name "${{ env.DEV_CENTER_NAME }}" --project-name "${{ env.PROJECT_NAME }}" --environment-name "tst" --yes || echo "Tst environment not found or already deleted"
+          az devcenter dev environment delete --dev-center-name "${{ env.DEV_CENTER_NAME }}" --project-name "${{ env.PROJECT_NAME }}" --environment-name "${{ needs.generate-env-names.outputs.tst-env-name }}" --yes || echo "Tst environment not found or already deleted"
 
       - name: Cleanup Summary
         if: always()
@@ -179,7 +195,7 @@ jobs:
   scheduled-cleanup:
     runs-on: ubuntu-latest
     name: Scheduled Cleanup (30 mins)
-    needs: deploy-tst
+    needs: [deploy-tst, generate-env-names]
     if: success() && inputs.deleteAllAfter30mins == 'true'
     timeout-minutes: 50
     steps:
@@ -205,12 +221,12 @@ jobs:
       - name: Delete Dev Environment (Scheduled)
         run: |
           echo "Deleting Dev environment after timeout..."
-          az devcenter dev environment delete --dev-center-name "${{ env.DEV_CENTER_NAME }}" --project-name "${{ env.PROJECT_NAME }}" --environment-name "dev" --yes || echo "Dev environment not found or already deleted"
+          az devcenter dev environment delete --dev-center-name "${{ env.DEV_CENTER_NAME }}" --project-name "${{ env.PROJECT_NAME }}" --environment-name "${{ needs.generate-env-names.outputs.dev-env-name }}" --yes || echo "Dev environment not found or already deleted"
 
       - name: Delete Tst Environment (Scheduled)
         run: |
           echo "Deleting Tst environment after timeout..."
-          az devcenter dev environment delete --dev-center-name "${{ env.DEV_CENTER_NAME }}" --project-name "${{ env.PROJECT_NAME }}" --environment-name "tst" --yes || echo "Tst environment not found or already deleted"
+          az devcenter dev environment delete --dev-center-name "${{ env.DEV_CENTER_NAME }}" --project-name "${{ env.PROJECT_NAME }}" --environment-name "${{ needs.generate-env-names.outputs.tst-env-name }}" --yes || echo "Tst environment not found or already deleted"
 
       - name: Scheduled Cleanup Summary
         if: always()
