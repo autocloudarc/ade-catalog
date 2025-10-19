@@ -1,0 +1,29 @@
+{
+    "github.copilot.chat.mcp.servers": {
+        "github": {
+            "command": "docker",
+            "args": [
+                "run",
+                "-i",
+                "--rm",
+                "-e",
+                "GITHUB_PERSONAL_ACCESS_TOKEN",
+                "-e",
+                "GITHUB_TOOLSETS",
+                "ghcr.io/github/github-mcp-server"
+            ],
+            "env": {
+                "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:github_pat}",
+                "GITHUB_TOOLSETS": "repos,secrets"
+            }
+        }
+    },
+    "inputs": [
+        {
+            "type": "promptString",
+            "id": "github_pat",
+            "description": "GitHub Personal Access Token (or set via $env:GITHUB_PERSONAL_ACCESS_TOKEN)",
+            "password": true
+        }
+    ]
+}

@@ -4,3 +4,9 @@
 
 /.vs
 /node_modules
+
+# VS Code MCP configuration (may contain sensitive data)
+.vscode/mcp.json
+
+# PowerShell scripts with hardcoded secrets (for local use only)
+scripts/Add-GitHubSecrets.ps1

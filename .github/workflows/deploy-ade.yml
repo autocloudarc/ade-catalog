@@ -19,25 +19,64 @@ env:
   ENVIRONMENT_DEFINITION_NAME: tf-deployment
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latst
-    strategy:
-      matrix:
-        environment:
-          - name: dev
-            storageAccountPrefix: devsta
-            web_nsg: dev-web-nsg
-            app_nsg: dev-app-nsg
-            dta_nsg: dev-dta-nsg
-            logAnalyticsWorkspaceName: dev-law-01
-          - name: tst
-            storageAccountPrefix: tststa
-            web_nsg: tst-web-nsg
-            app_nsg: tst-app-nsg
-            dta_nsg: tst-dta-nsg
-            logAnalyticsWorkspaceName: tst-law-01
-      max-parallel: 1
+  deploy-dev:
+    runs-on: ubuntu-latest
+    name: Deploy to Dev
+    steps:
+      - uses: actions/checkout@v4
 
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Dev ADE
+        run: |
+          az devcenter dev environment create \
+            --dev-center-name "${{ env.DEV_CENTER_NAME }}" \
+            --project-name "${{ env.PROJECT_NAME }}" \
+            --environment-name "dev" \
+            --environment-definition-name "${{ env.ENVIRONMENT_DEFINITION_NAME }}" \
+            --parameters \
+              storageAccountPrefix="devsta" \
+              web_nsg="dev-web-nsg" \
+              app_nsg="dev-app-nsg" \
+              dta_nsg="dev-dta-nsg" \
+              logAnalyticsWorkspaceName="dev-law-01"
+
+      - name: Get Dev Environment Details
+        if: success()
+        run: |
+          az devcenter dev environment show \
+            --dev-center-name "${{ env.DEV_CENTER_NAME }}" \
+            --project-name "${{ env.PROJECT_NAME }}" \
+            --environment-name "dev"
+
+      - name: Dev Deployment Summary
+        if: always()
+        run: |
+          echo "## Dev Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "Environment: Dev" >> $GITHUB_STEP_SUMMARY
+          echo "Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+
+  approval:
+    runs-on: ubuntu-latest
+    name: Request Approval for Tst
+    needs: deploy-dev
+    if: success()
+    steps:
+      - name: Request Manual Approval
+        run: |
+          echo "Dev deployment completed successfully!"
+          echo "Waiting for manual approval to proceed with Tst deployment..."
+          echo "Review the Dev environment and approve to continue."
+
+  deploy-tst:
+    runs-on: ubuntu-latest
+    name: Deploy to Tst
+    needs: approval
     steps:
       - uses: actions/checkout@v4
 
@@ -48,31 +87,31 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Deploy to ${{ matrix.environment.name }} ADE
+      - name: Deploy to Tst ADE
         run: |
           az devcenter dev environment create \
             --dev-center-name "${{ env.DEV_CENTER_NAME }}" \
             --project-name "${{ env.PROJECT_NAME }}" \
-            --environment-name "${{ matrix.environment.name }}" \
+            --environment-name "tst" \
             --environment-definition-name "${{ env.ENVIRONMENT_DEFINITION_NAME }}" \
             --parameters \
-              storageAccountPrefix="${{ matrix.environment.storageAccountPrefix }}" \
-              web_nsg="${{ matrix.environment.web_nsg }}" \
-              app_nsg="${{ matrix.environment.app_nsg }}" \
-              dta_nsg="${{ matrix.environment.dta_nsg }}" \
-              logAnalyticsWorkspaceName="${{ matrix.environment.logAnalyticsWorkspaceName }}"
+              storageAccountPrefix="tststa" \
+              web_nsg="tst-web-nsg" \
+              app_nsg="tst-app-nsg" \
+              dta_nsg="tst-dta-nsg" \
+              logAnalyticsWorkspaceName="tst-law-01"
 
-      - name: Get ${{ matrix.environment.name }} Environment Details
+      - name: Get Tst Environment Details
         if: success()
         run: |
           az devcenter dev environment show \
             --dev-center-name "${{ env.DEV_CENTER_NAME }}" \
             --project-name "${{ env.PROJECT_NAME }}" \
-            --environment-name "${{ matrix.environment.name }}"
+            --environment-name "tst"
 
-      - name: Deployment Summary
+      - name: Tst Deployment Summary
         if: always()
         run: |
-          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
-          echo "Environment: ${{ matrix.environment.name }}" >> $GITHUB_STEP_SUMMARY
+          echo "## Tst Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "Environment: Tst" >> $GITHUB_STEP_SUMMARY
           echo "Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
